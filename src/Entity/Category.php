@@ -12,7 +12,7 @@ use Gedmo\Mapping\Annotation as gedmo;
 
 /**
  * @ORM\Entity()
- * @ORM\Table(name="tours_photo")
+ * @ORM\Table(name="tours_category")
  */
 class Category extends \WebCMS\Entity\Entity
 {

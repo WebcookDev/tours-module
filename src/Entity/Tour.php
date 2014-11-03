@@ -28,8 +28,7 @@ class Tour extends \WebCMS\Entity\Entity
     private $tourTime;
 
     /**
-     * @ORM\ManyToMany(targetEntity="Category", inversedBy="tours")
-     * @ORM\JoinColumn(name="category_id", referencedColumnName="id", onDelete="CASCADE")
+     * @ORM\OneToMany(targetEntity="Category", mappedBy="tour")
      */
     private $categories;
 
@@ -81,7 +80,6 @@ class Tour extends \WebCMS\Entity\Entity
         $this->hide = false;
         $this->top = false;
         $this->homepage = false;
-        $this->categories = new ArrayCollection();
     }
 
     /**
