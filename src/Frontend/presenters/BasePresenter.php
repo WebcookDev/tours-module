@@ -1,14 +1,14 @@
 <?php
 
 /**
- * This file is part of the Cars module for webcms2.
+ * This file is part of the Tours module for webcms2.
  * Copyright (c) @see LICENSE
  */
 
-namespace FrontendModule\CarsModule;
+namespace FrontendModule\ToursModule;
 
 /**
- * Description of CarsPresenter
+ * Description of ToursPresenter
  *
  * @author Jakub Sanda <jakub.sanda@webcook.cz>
  */
