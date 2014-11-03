@@ -34,7 +34,7 @@ class Tour extends \WebCMS\Entity\Entity
     private $categories;
 
     /**
-     * @gedmo\Slug(fields={"fullname"})
+     * @gedmo\Slug(fields={"name"})
      * @orm\Column(length=255, unique=true)
      */
     private $slug;
