@@ -28,9 +28,9 @@ class Tour extends \WebCMS\Entity\Entity
     private $tourTime;
 
     /**
-     * @ORM\OneToMany(targetEntity="Category", mappedBy="tour")
+     * @ORM\ManyToOne(targetEntity="Category", inversedBy="tours") 
      */
-    private $categories;
+    private $category;
 
     /**
      * @gedmo\Slug(fields={"name"})
@@ -283,27 +283,27 @@ class Tour extends \WebCMS\Entity\Entity
     }
 
     /**
-     * Sets the value of categories.
+     * Sets the value of category.
      *
-     * @param mixed $categories the categories
+     * @param mixed $category the category
      *
      * @return self
      */
-    public function getCategories() 
+    public function getCategory() 
     {
-        return $this->categories;
+        return $this->category;
     }
 
     /**
-     * Sets the value of categories.
+     * Sets the value of category.
      *
-     * @param mixed $categories the categories
+     * @param mixed $category the category
      *
      * @return self
      */
-    public function setCategories($categories)
+    public function setCategory($category)
     {
-        $this->categories = $categories;
+        $this->category = $category;
 
         return $this;
     }

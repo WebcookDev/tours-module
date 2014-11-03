@@ -27,6 +27,12 @@ class Category extends \WebCMS\Entity\Entity
      */
     private $slug;
 
+    /**
+     * @ORM\OneToMany(targetEntity="Tour", mappedBy="category") 
+     * @var Array
+     */
+    private $tours;
+
 
     /**
      * Gets the value of name.
@@ -60,5 +66,29 @@ class Category extends \WebCMS\Entity\Entity
     public function getSlug()
     {
         return $this->slug;
+    }
+
+    /**
+     * Gets the tours of tours.
+     *
+     * @return mixed
+     */
+    public function getTours()
+    {
+        return $this->tours;
+    }
+
+    /**
+     * Sets the value of tours.
+     *
+     * @param mixed $tours the tours
+     *
+     * @return self
+     */
+    public function setTours($tours)
+    {
+        $this->tours = $tours;
+
+        return $this;
     }
 }
