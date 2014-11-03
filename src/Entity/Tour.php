@@ -107,6 +107,30 @@ class Tour extends \WebCMS\Entity\Entity
     }
 
     /**
+     * Gets the value of tourTime.
+     *
+     * @return mixed
+     */
+    public function getTourTime()
+    {
+        return $this->tourTime;
+    }
+
+    /**
+     * Sets the value of tourTime.
+     *
+     * @param mixed $tourTime the tour time
+     *
+     * @return self
+     */
+    public function setTourTime($tourTime)
+    {
+        $this->tourTime = $tourTime;
+
+        return $this;
+    }
+
+    /**
      * Gets the value of price.
      *
      * @return mixed
