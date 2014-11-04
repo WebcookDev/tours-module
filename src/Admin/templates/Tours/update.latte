@@ -43,7 +43,7 @@
 		<br /><br />
 		
 		<div class="well row" id="pictures">
-			{if $tour->getId()}
+			{if !empty($tour)}
 				{foreach $tour->getPhotos() as $photo}
 					<div class="col-md-3 jq_fileBox">
 						<div class="img-thumbnail">
