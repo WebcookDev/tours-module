@@ -25,6 +25,8 @@ class ToursPresenter extends BasePresenter
     private $tours;
 
     private $category;
+
+    private $categories;
     
     protected function startup() 
     {
@@ -39,38 +41,47 @@ class ToursPresenter extends BasePresenter
         parent::beforeRender(); 
     }
 
-    public function actionDefault($id)
+    public function actionDefault($id, $category)
     {
         $parameters = $this->getParameter();
+        
+        $this->categories = $this->categoryRepository->findAll();
+
         if (count($parameters['parameters']) > 0) {
             $slug = $parameters['parameters'][0];
             $this->category = $this->categoryRepository->findOneBy(array(
                 'slug' => $slug
             ));
-            
-            if (!$this->category) {
+
+            $this->tours = $this->repository->findBy(array(
+                'category' => $this->category
+            ));
+
+            if (isset($parameters['parameters'][1])) {
                 $this->tour = $this->repository->findOneBy(array(
-                    'slug' => $slug,
-                    'hide' => false
+                    'slug' => $parameters['parameters'][1]
                 ));
             }
+
+        } else {
+            $this->tours = $this->repository->findBy(array(
+                'category' => $this->categories[0]
+            ));
         }
 
-        $this->tours = $this->repository->findAll();
     }
 
     public function renderDefault($id)
     {   
         if ($this->tour) {
             $this->template->tour = $this->tour;
-
-            $this->template->seoTitle = $this->car->getFullname() . ' - ' . $this->actualPage->getMetaTitle();
+            $this->template->seoTitle = $this->tour->getName() . ' - ' . $this->actualPage->getMetaTitle();
             $this->template->setFile(APP_DIR . '/templates/tours-module/Tours/detail.latte');
         }
 
         $this->template->page = $this->getParameter('p') ? $this->getParameter('p') : 0;
         $this->template->tours = $this->tours;
-        $this->template->category = $this->category;
+        $this->template->categories = $this->categories;
         $this->template->id = $id;
     }
 
