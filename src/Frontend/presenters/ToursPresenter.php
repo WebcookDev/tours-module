@@ -7,6 +7,8 @@
 
 namespace FrontendModule\ToursModule;
 
+use Nette\Application\UI;
+use Kdyby\BootstrapFormRenderer\BootstrapRenderer;
 use WebCMS\ToursModule\Entity\Tour;
 
 /**
@@ -41,7 +43,7 @@ class ToursPresenter extends BasePresenter
         parent::beforeRender(); 
     }
 
-    public function actionDefault($id, $category)
+    public function actionDefault($id)
     {
         $parameters = $this->getParameter();
         
@@ -71,10 +73,73 @@ class ToursPresenter extends BasePresenter
 
     }
 
+    public function createComponentForm($name, $context = null, $fromPage = null) 
+    {
+
+        if($context != null){
+
+            $form = new UI\Form();
+
+            $form->getElementPrototype()->action = $context->link('default', array(
+                'path' => $fromPage->getPath(),
+                'abbr' => $context->abbr,
+                'parameters' => array($this->tour->getCategory()->getSlug(), $this->tour->getSlug()),
+                'do' => 'form-submit'
+            ));
+
+            $form->setTranslator($context->translator);
+            $form->setRenderer(new BootstrapRenderer);
+            
+            $form->getElementPrototype()->class = 'form-horizontal contact-agent-form';
+            
+        }else{
+            $form = $this->createForm('form-submit', 'default', $context);
+        }
+
+        $form->addText('name', 'Name')->setRequired();
+        $form->addText('email', 'E-mail')->setRequired();
+        $form->addText('phone', 'Phone number');
+        $form->addHidden('tourId', $this->tour->getId());
+
+        $form->addSubmit('submit', 'Send demand')->setAttribute('class', 'btn btn-success');
+        $form->onSuccess[] = callback($this, 'formSubmitted');
+
+        return $form;
+    }
+
+    public function formSubmitted($form)
+    {
+
+        $values = $form->getValues();
+
+        $this->flashMessage('Reservation form has been sent', 'success');
+
+        $httpRequest = $this->getContext()->getService('httpRequest');
+
+        $url = $httpRequest->getReferer();
+        $url->appendQuery(array(self::FLASH_KEY => $this->getParam(self::FLASH_KEY)));
+
+        $this->redirectUrl($url->absoluteUrl);
+        
+    }
+
     public function renderDefault($id)
     {   
         if ($this->tour) {
+
+            $otherTours = $this->repository->findBy(array(
+                'category' => $this->tour->getCategory()
+            ));
+
+            foreach ($otherTours as $key => $ot) {
+                if($ot->getId() === $this->tour->getId()){
+                    unset($otherTours[$key]);
+                }
+            }
+
+            $this->template->otherTours = $otherTours;
             $this->template->tour = $this->tour;
+            $this->template->reservationForm = $this->createComponentForm('form', $this, $this->actualPage);
             $this->template->seoTitle = $this->tour->getName() . ' - ' . $this->actualPage->getMetaTitle();
             $this->template->setFile(APP_DIR . '/templates/tours-module/Tours/detail.latte');
         }
@@ -88,9 +153,14 @@ class ToursPresenter extends BasePresenter
     public function homepageBox($context)
     {
         $template = $context->createTemplate();
-        $template->cars = $context->em->getRepository('WebCMS\ToursModule\Entity\Car')->findBy(array(
+        $template->tours = $context->em->getRepository('WebCMS\ToursModule\Entity\Tour')->findBy(array(
             'hide' => false,
             'homepage' => true
+        ));
+
+        $template->tourPage = $context->em->getRepository('WebCMS\Entity\Page')->findOneBy(array(
+            'moduleName' => 'Tours',
+            'presenter' => 'Tours'
         ));
 
         $topTour = $context->em->getRepository('\WebCMS\ToursModule\Entity\Tour')->findOneBy(array(

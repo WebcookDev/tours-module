@@ -46,7 +46,7 @@ class Tours extends \WebCMS\Module
 
     public function __construct()
     {
-        
+        $this->addBox('homepage', 'Tours', 'homepageBox');
     }
 
     public function search(\Doctrine\ORM\EntityManager $em, $phrase, \WebCMS\Entity\Language $language)
