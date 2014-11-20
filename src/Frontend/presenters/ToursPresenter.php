@@ -96,10 +96,26 @@ class ToursPresenter extends BasePresenter
             $form = $this->createForm('form-submit', 'default', $context);
         }
 
+        $languages = array(
+            'cz' => 'Czech',
+            'en' => 'English',
+            'it' => 'Italian',
+            'ru' => 'Russian',
+            'fr' => 'French'
+         );
         $form->addText('name', 'Name')->setRequired();
         $form->addText('email', 'E-mail')->setRequired();
         $form->addText('phone', 'Phone number');
         $form->addHidden('tourId', $this->tour->getId());
+
+        $form->addText('location', 'Location')->setRequired();
+        $form->addText('people_count', 'People count')->setRequired();
+        $form->addSelect('languages', 'Language', $languages)->setRequired();
+
+        $form->addText('date', 'Date')->setRequired();
+        $form->addText('time', 'Time')->setRequired();
+
+        $form->addTextArea('text', 'Text');
 
         $form->addSubmit('submit', 'Send demand')->setAttribute('class', 'btn btn-success');
         $form->onSuccess[] = callback($this, 'formSubmitted');
@@ -112,7 +128,11 @@ class ToursPresenter extends BasePresenter
 
         $values = $form->getValues();
 
-        $this->flashMessage('Reservation form has been sent', 'success');
+        if (!filter_var($values->email, FILTER_VALIDATE_EMAIL)) {
+            $this->flashMessage('Email is not valid', 'danger');
+        }else{
+            $this->flashMessage('Reservation form has been sent', 'success');
+        }
 
         $httpRequest = $this->getContext()->getService('httpRequest');
 
