@@ -104,16 +104,21 @@ class ToursPresenter extends BasePresenter
             'fr' => 'French'
          );
         $form->addText('name', 'Name')->setRequired();
-        $form->addText('email', 'E-mail')->setRequired();
+        $form->addText('email', 'E-mail')
+            ->addRule(UI\Form::EMAIL, 'Email is not valid')
+            ->setRequired();
         $form->addText('phone', 'Phone number');
         $form->addHidden('tourId', $this->tour->getId());
+        $form->addHidden('tourName', $this->tour->getName());
 
         $form->addText('location', 'Location')->setRequired();
         $form->addText('people_count', 'People count')->setRequired();
         $form->addSelect('languages', 'Language', $languages)->setRequired();
 
         $form->addText('date', 'Date')->setRequired();
-        $form->addText('time', 'Time')->setRequired();
+        $form->addText('time', 'Time')
+            ->setAttribute('placeholder', '9:00')
+            ->setRequired();
 
         $form->addTextArea('text', 'Text');
 
@@ -128,11 +133,36 @@ class ToursPresenter extends BasePresenter
 
         $values = $form->getValues();
 
-        if (!filter_var($values->email, FILTER_VALIDATE_EMAIL)) {
-            $this->flashMessage('Email is not valid', 'danger');
-        }else{
+        $mail = new \Nette\Mail\Message;
+        $infoMail = $this->settings->get('Info email', 'basic', 'text')->getValue();
+        $mail->addTo($infoMail);
+        
+        $domain = str_replace('www.', '', $this->getHttpRequest()->url->host);
+        
+        if($domain !== 'localhost') $mail->setFrom('no-reply@' . $domain);
+        else $mail->setFrom('no-reply@test.cz'); // TODO move to settings
+
+        $mailBody = '<h1>'.$values->tourName.'</h1>';
+        $mailBody .= '<p><strong>Jméno: </strong>'.$values->name.'</p>';
+        $mailBody .= '<p><strong>Email: </strong>'.$values->email.'</p>';
+        $mailBody .= '<p><strong>Telefon: </strong>'.$values->phone.'</p>';
+        $mailBody .= '<p><strong>Datum prohlídky: </strong>'.$values->date.'</p>';
+        $mailBody .= '<p><strong>Čas začátku prohlídky: </strong>'.$values->time.'</p>';
+        $mailBody .= '<p><strong>Místo začátku prohlídky: </strong>'.$values->location.'</p>';
+        $mailBody .= '<p><strong>Počet lidí: </strong>'.$values->people_count.'</p>';
+        $mailBody .= '<p><strong>Jazyk prohlídky: </strong>'.$values->languages.'</p>';
+        $mailBody .= '<p><strong>Další požadavky: </strong>'.$values->text.'</p>';
+
+        $mail->setSubject('Poptávka prohlídky '.$values->tourName);
+        $mail->setHtmlBody($mailBody);
+
+        try {
+            $mail->send();  
             $this->flashMessage('Reservation form has been sent', 'success');
+        } catch (\Exception $e) {
+            $this->flashMessage('Cannot send email.', 'danger');                    
         }
+       
 
         $httpRequest = $this->getContext()->getService('httpRequest');
 
