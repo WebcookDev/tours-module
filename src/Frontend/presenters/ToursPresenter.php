@@ -223,4 +223,34 @@ class ToursPresenter extends BasePresenter
         return $template;  
     }
 
+    public function carouselBox($context)
+    {
+        $template = $context->createTemplate();
+        $template->tours = $context->em->getRepository('WebCMS\ToursModule\Entity\Tour')->findBy(array(
+            'hide' => false,
+            'homepage' => true
+        ));
+
+        $photos = array();
+        foreach ($template->tours as $tour) {
+            $photos[$tour->getSlug()] = $tour->getDefaultPhoto()->getPath();
+        }
+
+        $template->tourPage = $context->em->getRepository('WebCMS\Entity\Page')->findOneBy(array(
+            'moduleName' => 'Tours',
+            'presenter' => 'Tours'
+        ));
+
+        $topTour = $context->em->getRepository('\WebCMS\ToursModule\Entity\Tour')->findOneBy(array(
+            'top' => true
+        ));
+
+        $template->topTour = $topTour ? $topTour : null;
+        $template->abbr = $context->abbr;
+        $template->photos = $photos;
+        $template->setFile(APP_DIR . '/templates/tours-module/Tours/homepageCarouselBox.latte');
+
+        return $template;  
+    }
+
 }
