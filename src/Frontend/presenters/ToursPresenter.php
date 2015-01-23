@@ -233,7 +233,9 @@ class ToursPresenter extends BasePresenter
 
         $photos = array();
         foreach ($template->tours as $tour) {
-            $photos[$tour->getSlug()] = $tour->getDefaultPhoto()->getPath();
+            if ($tour->getDefaultPhoto()) {
+                $photos[$tour->getSlug()] = $tour->getDefaultPhoto()->getPath();
+            }
         }
 
         $template->tourPage = $context->em->getRepository('WebCMS\Entity\Page')->findOneBy(array(
