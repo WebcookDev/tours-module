@@ -55,20 +55,26 @@ class ToursPresenter extends BasePresenter
                 'slug' => $slug
             ));
 
-            $this->tours = $this->repository->findBy(array(
-                'category' => $this->category
-            ));
+            if ($this->category) {
+                $this->tours = $this->repository->findBy(array(
+                    'category' => $this->category
+                ));
 
-            if (isset($parameters['parameters'][1])) {
+                if (isset($parameters['parameters'][1])) {
+                    $this->tour = $this->repository->findOneBy(array(
+                        'slug' => $parameters['parameters'][1]
+                    ));
+                }
+            } else {
                 $this->tour = $this->repository->findOneBy(array(
-                    'slug' => $parameters['parameters'][1]
+                    'slug' => $slug
                 ));
             }
 
+
+
         } else {
-            $this->tours = $this->repository->findBy(array(
-                'category' => $this->categories[0]
-            ));
+            $this->tours = $this->repository->findAll();
         }
 
     }
