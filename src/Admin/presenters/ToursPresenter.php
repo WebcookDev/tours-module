@@ -67,8 +67,6 @@ class ToursPresenter extends BasePresenter
 
         $grid->addColumnText('tourTime', 'Tour time')->setSortable();
 
-        $grid->addColumnText('price', 'Price')->setSortable();
-
         $grid->addColumnText('top', 'Top')->setCustomRender(function($item) {
             return $item->getTop() ? 'yes' : 'no';
         })->setSortable();
@@ -215,7 +213,7 @@ class ToursPresenter extends BasePresenter
         $form->addText('name', 'Name')->setRequired();
         $form->addSelect('category_id', 'Category')->setItems($categoriesForSelect);
         $form->addText('tourTime', 'Tour time')->setRequired();
-        $form->addText('price', 'Price');
+        $form->addTextArea('price', 'Price')->setAttribute('class', 'form-control editor');
         $form->addTextArea('shortInfo', 'Short info')->setAttribute('class', 'form-control editor');
         $form->addTextArea('info', 'Info')->setAttribute('class', 'form-control editor');
                 

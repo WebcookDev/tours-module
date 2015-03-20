@@ -86,10 +86,17 @@ class ToursPresenter extends BasePresenter
 
             $form = new UI\Form();
 
+            // TODO fix this, fix for guide-prague
+            if ($this->tour->getCategory()->getSlug() == "vylety-mimo-prahu" || $this->tour->getCategory()->getSlug() == "vylety-mimo-cr") {
+                $category = "";
+            } else {
+                $category = $this->tour->getCategory()->getSlug();
+            }
+
             $form->getElementPrototype()->action = $context->link('default', array(
                 'path' => $fromPage->getPath(),
                 'abbr' => $context->abbr,
-                'parameters' => array($this->tour->getCategory()->getSlug(), $this->tour->getSlug()),
+                'parameters' => array($category, $this->tour->getSlug()),
                 'do' => 'form-submit'
             ));
 

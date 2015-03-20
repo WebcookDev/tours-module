@@ -38,8 +38,8 @@ class Tour extends \WebCMS\Entity\Entity
      */
     private $slug;
 
-	/**
-     * @ORM\Column(type="decimal", scale=2, nullable=true)
+    /**
+     * @orm\Column(type="text", nullable=true)
      */
 	private $price;
 
