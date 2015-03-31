@@ -115,7 +115,7 @@ class ToursPresenter extends BasePresenter
             'it' => 'Italian',
             'ru' => 'Russian',
             'fr' => 'French',
-            'ot' => 'Other'
+            'other' => 'Other'
          );
         $form->addText('name', 'Name')->setRequired();
         $form->addText('email', 'E-mail')
