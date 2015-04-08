@@ -208,7 +208,9 @@ class ToursPresenter extends BasePresenter
     {
         $form = $this->createForm();
 
-        $categories = $this->em->getRepository('\WebCMS\ToursModule\Entity\Category')->findAll();
+        $categories = $this->em->getRepository('\WebCMS\ToursModule\Entity\Category')->findBy(array(
+            'page' => $this->actualPage
+        ));
         $categoriesForSelect = array();
         if ($categories) {
             foreach ($categories as $category) {
