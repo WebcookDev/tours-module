@@ -190,6 +190,8 @@ class ToursPresenter extends BasePresenter
             $this->category->$setter($value);
         }
 
+        $this->category->setPage($this->actualPage);
+
         $this->em->flush();
         $this->flashMessage('Category has been added/updated.', 'success');
         
@@ -255,6 +257,7 @@ class ToursPresenter extends BasePresenter
         $this->tour->setShortInfo($values->shortInfo);
         $this->tour->setInfo($values->info);
         $this->tour->setHide($values->hide);
+        $this->tour->setPage($this->actualPage);
             
         if(array_key_exists('files', $_POST)){
             $counter = 0;

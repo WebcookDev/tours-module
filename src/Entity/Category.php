@@ -33,6 +33,12 @@ class Category extends \WebCMS\Entity\Entity
      */
     private $tours;
 
+    /**
+     * @orm\ManyToOne(targetEntity="WebCMS\Entity\Page")
+     * @orm\JoinColumn(name="page_id", referencedColumnName="id", onDelete="CASCADE")
+     */
+    private $page;
+
 
     /**
      * Gets the value of name.
@@ -89,6 +95,17 @@ class Category extends \WebCMS\Entity\Entity
     {
         $this->tours = $tours;
 
+        return $this;
+    }
+
+    public function getPage()
+    {
+        return $this->page;
+    }
+    
+    public function setPage($page)
+    {
+        $this->page = $page;
         return $this;
     }
 }
