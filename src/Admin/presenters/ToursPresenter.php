@@ -57,7 +57,9 @@ class ToursPresenter extends BasePresenter
 
     protected function createComponentGrid($name)
     {
-        $grid = $this->createGrid($this, $name, "\WebCMS\ToursModule\Entity\Tour");
+        $grid = $this->createGrid($this, $name, "\WebCMS\ToursModule\Entity\Tour", null, array(
+            'page = '.$this->actualPage->getId()
+        ));
 
         $grid->addColumnText('name', 'Name')->setSortable();
 
@@ -142,7 +144,9 @@ class ToursPresenter extends BasePresenter
 
     protected function createComponentCategoriesGrid($name)
     {
-        $grid = $this->createGrid($this, $name, "\WebCMS\ToursModule\Entity\Category");
+        $grid = $this->createGrid($this, $name, "\WebCMS\ToursModule\Entity\Category", null, array(
+            'page = '.$this->actualPage->getId()
+        ));
 
         $grid->addColumnText('name', 'Name')->setSortable();
 

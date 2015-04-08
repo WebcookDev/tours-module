@@ -47,7 +47,9 @@ class ToursPresenter extends BasePresenter
     {
         $parameters = $this->getParameter();
         
-        $this->categories = $this->categoryRepository->findAll();
+        $this->categories = $this->categoryRepository->findBy(array(
+            'page' => $this->actualPage
+        ));
 
         if (count($parameters['parameters']) > 0) {
             $slug = $parameters['parameters'][0];
@@ -74,7 +76,9 @@ class ToursPresenter extends BasePresenter
 
 
         } else {
-            $this->tours = $this->repository->findAll();
+            $this->tours = $this->repository->findBy(array(
+                'page' => $this->actualPage
+            ));
         }
 
     }
@@ -214,21 +218,24 @@ class ToursPresenter extends BasePresenter
         $this->template->id = $id;
     }
 
-    public function homepageBox($context)
+    public function homepageBox($context, $fromPage)
     {
         $template = $context->createTemplate();
         $template->tours = $context->em->getRepository('WebCMS\ToursModule\Entity\Tour')->findBy(array(
             'hide' => false,
+            'page' => $fromPage,
             'homepage' => true
         ));
 
         $template->tourPage = $context->em->getRepository('WebCMS\Entity\Page')->findOneBy(array(
             'moduleName' => 'Tours',
-            'presenter' => 'Tours'
+            'presenter' => 'Tours',
+            'language' => $fromPage->getLanguage()
         ));
 
         $topTour = $context->em->getRepository('\WebCMS\ToursModule\Entity\Tour')->findOneBy(array(
-            'top' => true
+            'top' => true,
+            'page' => $fromPage
         ));
         $template->topTour = $topTour ? $topTour : null;
         $template->abbr = $context->abbr;
@@ -237,11 +244,12 @@ class ToursPresenter extends BasePresenter
         return $template;  
     }
 
-    public function carouselBox($context)
+    public function carouselBox($context, $fromPage)
     {
         $template = $context->createTemplate();
         $template->tours = $context->em->getRepository('WebCMS\ToursModule\Entity\Tour')->findBy(array(
             'hide' => false,
+            'page' => $fromPage,
             'homepage' => true
         ));
 
@@ -254,11 +262,13 @@ class ToursPresenter extends BasePresenter
 
         $template->tourPage = $context->em->getRepository('WebCMS\Entity\Page')->findOneBy(array(
             'moduleName' => 'Tours',
-            'presenter' => 'Tours'
+            'presenter' => 'Tours',
+            'language' => $fromPage->getLanguage()
         ));
 
         $topTour = $context->em->getRepository('\WebCMS\ToursModule\Entity\Tour')->findOneBy(array(
-            'top' => true
+            'top' => true,
+            'page' => $fromPage
         ));
 
         $template->topTour = $topTour ? $topTour : null;
