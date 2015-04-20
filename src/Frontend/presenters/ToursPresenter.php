@@ -223,9 +223,14 @@ class ToursPresenter extends BasePresenter
         $template = $context->createTemplate();
         $template->tours = $context->em->getRepository('WebCMS\ToursModule\Entity\Tour')->findBy(array(
             'hide' => false,
-            'page' => $fromPage,
             'homepage' => true
         ));
+
+        foreach ($template->tours as $key => $tour) {
+            if ($tour->getPage()->getLanguage() != $fromPage->getLanguage()) {
+                unset($template->tours[$key]);
+            }
+        }
 
         $template->tourPage = $context->em->getRepository('WebCMS\Entity\Page')->findOneBy(array(
             'moduleName' => 'Tours',
@@ -249,9 +254,15 @@ class ToursPresenter extends BasePresenter
         $template = $context->createTemplate();
         $template->tours = $context->em->getRepository('WebCMS\ToursModule\Entity\Tour')->findBy(array(
             'hide' => false,
-            'page' => $fromPage,
             'homepage' => true
         ));
+
+        foreach ($template->tours as $key => $tour) {
+            if ($tour->getPage()->getLanguage() != $fromPage->getLanguage()) {
+                unset($template->tours[$key]);
+            }
+        }
+
 
         $photos = array();
         foreach ($template->tours as $tour) {
