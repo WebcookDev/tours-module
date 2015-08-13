@@ -212,10 +212,33 @@ class ToursPresenter extends BasePresenter
             $this->template->setFile(APP_DIR . '/templates/tours-module/Tours/detail.latte');
         }
 
+        $actualCategory = end((explode('/', $_SERVER['REQUEST_URI'])));
+        $urlCategory = $this->categoryRepository->findOneBy(array(
+            'slug' => $actualCategory
+        ));
+
+        // dont care anymore
+        if ($actualCategory == 'prohlidky-prahy') {
+            $urlCategory = $this->categoryRepository->findOneBy(array(
+                'slug' => 'za-pamatkami'
+            ));
+        }
+        if ($actualCategory == 'prague-tours') {
+            $urlCategory = $this->categoryRepository->findOneBy(array(
+                'slug' => 'sightseeing'
+            ));
+        }
+        if ($actualCategory == 'balades-a-prague-1') {
+            $urlCategory = $this->categoryRepository->findOneBy(array(
+                'slug' => 'endroits-historiques-1'
+            ));
+        }
+
         $this->template->page = $this->getParameter('p') ? $this->getParameter('p') : 0;
         $this->template->tours = $this->tours;
         $this->template->categories = $this->categories;
         $this->template->id = $id;
+        $this->template->urlCategory = $urlCategory;
     }
 
     public function homepageBox($context, $fromPage)
