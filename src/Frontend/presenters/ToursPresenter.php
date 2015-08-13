@@ -131,6 +131,7 @@ class ToursPresenter extends BasePresenter
 
         $form->addText('location', 'Location')->setRequired();
         $form->addText('people_count', 'People count')->setRequired();
+        $form->addText('robot_check', 'Robot check');
         $form->addSelect('languages', 'Language', $languages)->setRequired();
 
         $form->addText('date', 'Date')->setRequired();
@@ -151,43 +152,47 @@ class ToursPresenter extends BasePresenter
 
         $values = $form->getValues();
 
-        $mail = new \Nette\Mail\Message;
-        $infoMail = $this->settings->get('Info email', 'basic', 'text')->getValue();
-        $mail->addTo($infoMail);
-        
-        $domain = str_replace('www.', '', $this->getHttpRequest()->url->host);
-        
-        if($domain !== 'localhost') $mail->setFrom('no-reply@' . $domain);
-        else $mail->setFrom('no-reply@test.cz'); // TODO move to settings
-
-        $mailBody = '<h1>'.$values->tourName.'</h1>';
-        $mailBody .= '<p><strong>Jméno: </strong>'.$values->name.'</p>';
-        $mailBody .= '<p><strong>Email: </strong>'.$values->email.'</p>';
-        $mailBody .= '<p><strong>Telefon: </strong>'.$values->phone.'</p>';
-        $mailBody .= '<p><strong>Datum prohlídky: </strong>'.$values->date.'</p>';
-        $mailBody .= '<p><strong>Čas začátku prohlídky: </strong>'.$values->time.'</p>';
-        $mailBody .= '<p><strong>Místo začátku prohlídky: </strong>'.$values->location.'</p>';
-        $mailBody .= '<p><strong>Počet lidí: </strong>'.$values->people_count.'</p>';
-        $mailBody .= '<p><strong>Jazyk prohlídky: </strong>'.$values->languages.'</p>';
-        $mailBody .= '<p><strong>Další požadavky: </strong>'.$values->text.'</p>';
-
-        $mail->setSubject('Poptávka prohlídky '.$values->tourName);
-        $mail->setHtmlBody($mailBody);
-
-        try {
-            $mail->send();  
-            $this->flashMessage('Reservation form has been sent', 'success');
-        } catch (\Exception $e) {
-            $this->flashMessage('Cannot send email.', 'danger');                    
-        }
+        if (empty($values->robot_check)) {
        
+            $mail = new \Nette\Mail\Message;
+            $infoMail = $this->settings->get('Info email', 'basic', 'text')->getValue();
+            $mail->addTo($infoMail);
+            
+            $domain = str_replace('www.', '', $this->getHttpRequest()->url->host);
+            
+            if($domain !== 'localhost') $mail->setFrom('no-reply@' . $domain);
+            else $mail->setFrom('no-reply@test.cz'); // TODO move to settings
 
-        $httpRequest = $this->getContext()->getService('httpRequest');
+            $mailBody = '<h1>'.$values->tourName.'</h1>';
+            $mailBody .= '<p><strong>Jméno: </strong>'.$values->name.'</p>';
+            $mailBody .= '<p><strong>Email: </strong>'.$values->email.'</p>';
+            $mailBody .= '<p><strong>Telefon: </strong>'.$values->phone.'</p>';
+            $mailBody .= '<p><strong>Datum prohlídky: </strong>'.$values->date.'</p>';
+            $mailBody .= '<p><strong>Čas začátku prohlídky: </strong>'.$values->time.'</p>';
+            $mailBody .= '<p><strong>Místo začátku prohlídky: </strong>'.$values->location.'</p>';
+            $mailBody .= '<p><strong>Počet lidí: </strong>'.$values->people_count.'</p>';
+            $mailBody .= '<p><strong>Jazyk prohlídky: </strong>'.$values->languages.'</p>';
+            $mailBody .= '<p><strong>Další požadavky: </strong>'.$values->text.'</p>';
 
-        $url = $httpRequest->getReferer();
-        $url->appendQuery(array(self::FLASH_KEY => $this->getParam(self::FLASH_KEY)));
+            $mail->setSubject('Poptávka prohlídky '.$values->tourName);
+            $mail->setHtmlBody($mailBody);
 
-        $this->redirectUrl($url->absoluteUrl);
+            try {
+                $mail->send();  
+                $this->flashMessage('Reservation form has been sent', 'success');
+            } catch (\Exception $e) {
+                $this->flashMessage('Cannot send email.', 'danger');                    
+            }
+           
+
+            $httpRequest = $this->getContext()->getService('httpRequest');
+
+            $url = $httpRequest->getReferer();
+            $url->appendQuery(array(self::FLASH_KEY => $this->getParam(self::FLASH_KEY)));
+
+            $this->redirectUrl($url->absoluteUrl);
+
+        }
         
     }
 
