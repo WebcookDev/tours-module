@@ -169,6 +169,7 @@ class ToursPresenter extends BasePresenter
         $form = $this->createForm();
 
         $form->addText('name', 'Name')->setRequired();
+        $form->addTextArea('info', 'Info')->setAttribute('class', 'form-control editor');
 
         $form->addSubmit('submit', 'Save')->setAttribute('class', 'btn btn-success');
         $form->onSuccess[] = callback($this, 'categoryFormSubmitted');

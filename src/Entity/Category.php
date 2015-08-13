@@ -28,6 +28,11 @@ class Category extends \WebCMS\Entity\Entity
     private $slug;
 
     /**
+     * @orm\Column(type="text", nullable=true)
+     */
+    private $info;
+
+    /**
      * @ORM\OneToMany(targetEntity="Tour", mappedBy="category") 
      * @var Array
      */
@@ -72,6 +77,30 @@ class Category extends \WebCMS\Entity\Entity
     public function getSlug()
     {
         return $this->slug;
+    }
+
+    /**
+     * Sets the value of info.
+     *
+     * @param mixed $info the info
+     *
+     * @return self
+     */
+    public function setInfo($info)
+    {
+        $this->info = $info;
+
+        return $this;
+    }
+
+    /**
+     * Gets the value of info.
+     *
+     * @return mixed
+     */
+    public function getInfo()
+    {
+        return $this->info;
     }
 
     /**
